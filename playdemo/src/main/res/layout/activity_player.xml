@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="#0099cc"
     tools:context=".VideoActivity">
 
@@ -11,11 +11,10 @@
     <com.kuanquan.playdemo.widget.media.IjkVideoView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="top" />
 
-    <!--显示提示信息改在播放器上面的-->
-    <TextView
+    <!--<TextView
         android:id="@+id/toast_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,6 +24,7 @@
         android:textSize="16sp"
         android:visibility="gone" />
 
+    &lt;!&ndash;显示提示信息改在播放器上面的 网速、缓存等 表格布局&ndash;&gt;
     <TableLayout
         android:id="@+id/hud_view"
         android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
         android:background="@color/ijk_transparent_dark"
         android:padding="8dp" />
 
-    <!--顶部标题栏-->
+    &lt;!&ndash;顶部标题栏&ndash;&gt;
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -42,6 +42,6 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:context=".toolbar_widget" />
+        tools:context=".toolbar_widget" />-->
 
 </FrameLayout>

@@ -24,9 +24,11 @@ import android.support.v7.app.ActionBar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.MediaController;
-
 import java.util.ArrayList;
 
+/**
+ * 安卓播放器控制类
+ */
 public class AndroidMediaController extends MediaController implements IMediaController {
     private ActionBar mActionBar;
 
@@ -35,6 +37,11 @@ public class AndroidMediaController extends MediaController implements IMediaCon
         initView(context);
     }
 
+    /**
+     *
+     * @param context
+     * @param useFastForward  是否使用快进
+     */
     public AndroidMediaController(Context context, boolean useFastForward) {
         super(context, useFastForward);
         initView(context);
@@ -43,6 +50,13 @@ public class AndroidMediaController extends MediaController implements IMediaCon
     public AndroidMediaController(Context context) {
         super(context);
         initView(context);
+    }
+
+    @Override
+    public void setAnchorView(View view) {
+        super.setAnchorView(view);
+//        view.setVisibility(GONE);
+        view.clearFocus();
     }
 
     private void initView(Context context) {
