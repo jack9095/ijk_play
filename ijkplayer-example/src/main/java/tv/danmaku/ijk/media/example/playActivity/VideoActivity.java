@@ -136,14 +136,14 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
 
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
 
-        // init player
+        // init player  初始化播放器
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
         mVideoView = (IjkVideoView) findViewById(R.id.video_view);
         mVideoView.setMediaController(mMediaController);
         mVideoView.setHudView(mHudView);
-        // prefer mVideoPath
+        // prefer mVideoPath   设置播放路径
         if (mVideoPath != null)
             mVideoView.setVideoPath(mVideoPath);
         else if (mVideoUri != null)
@@ -153,7 +153,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
             finish();
             return;
         }
-        mVideoView.start();
+        mVideoView.start();  // 开始播放
     }
 
     @Override
@@ -168,7 +168,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         super.onStop();
 
         if (mBackPressed || !mVideoView.isBackgroundPlayEnabled()) {
-            mVideoView.stopPlayback();
+            mVideoView.stopPlayback();  // 停止播放
             mVideoView.release(true);
             mVideoView.stopBackgroundPlay();
         } else {
