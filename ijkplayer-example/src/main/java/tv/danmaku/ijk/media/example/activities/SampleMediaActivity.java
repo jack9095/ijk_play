@@ -27,10 +27,10 @@ import android.view.MenuItem;
 
 import tv.danmaku.ijk.media.example.R;
 import tv.danmaku.ijk.media.example.application.AppActivity;
-import tv.danmaku.ijk.media.example.fragments.SampleMediaListFragment;
+import tv.danmaku.ijk.media.example.playActivity.SampleMediaListFragment;
 
 /**
- * 播放例子
+ * 播放activity的入口
  */
 public class SampleMediaActivity extends AppActivity  {
     public static Intent newIntent(Context context) {

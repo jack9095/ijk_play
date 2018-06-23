@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package tv.danmaku.ijk.media.example.activities;
+package tv.danmaku.ijk.media.example.playActivity;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -48,18 +48,21 @@ import tv.danmaku.ijk.media.example.widget.media.AndroidMediaController;
 import tv.danmaku.ijk.media.example.widget.media.IjkVideoView;
 import tv.danmaku.ijk.media.example.widget.media.MeasureHelper;
 
+/**
+ * 真正的视频播放Activity
+ */
 public class VideoActivity extends AppCompatActivity implements TracksFragment.ITrackHolder {
     private static final String TAG = "VideoActivity";
 
-    private String mVideoPath;
+    private String mVideoPath;   // 播放路径
     private Uri    mVideoUri;
 
-    private AndroidMediaController mMediaController;
-    private IjkVideoView mVideoView;
-    private TextView mToastTextView;
-    private TableLayout mHudView;
+    private AndroidMediaController mMediaController;   // 播放控制器
+    private IjkVideoView mVideoView;     // 播放器类（封装SurfaceView和TexTrueView）
+    private TextView mToastTextView;     // 显示提示信息改在播放器上面的
+    private TableLayout mHudView;        // 底部布局 在播放器里面的
     private DrawerLayout mDrawerLayout;
-    private ViewGroup mRightDrawer;
+    private ViewGroup mRightDrawer;     // 右边侧滑出来的布局
 
     private Settings mSettings;
     private boolean mBackPressed;

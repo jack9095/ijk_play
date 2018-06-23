@@ -36,6 +36,9 @@ import java.util.Locale;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import tv.danmaku.ijk.media.example.R;
 
+/**
+ * 轨道 、小路、路径
+ */
 public class TracksFragment extends Fragment {
     private ListView mTrackListView;
     private TrackAdapter mAdapter;

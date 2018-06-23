@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package tv.danmaku.ijk.media.example.activities;
+package tv.danmaku.ijk.media.example.start;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 
 import tv.danmaku.ijk.media.example.R;
+import tv.danmaku.ijk.media.example.playActivity.VideoActivity;
 import tv.danmaku.ijk.media.example.application.AppActivity;
 import tv.danmaku.ijk.media.example.application.Settings;
 import tv.danmaku.ijk.media.example.eventbus.FileExplorerEvents;

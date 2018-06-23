@@ -33,7 +33,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import tv.danmaku.ijk.media.example.R;
-import tv.danmaku.ijk.media.example.activities.VideoActivity;
+import tv.danmaku.ijk.media.example.playActivity.VideoActivity;
 import tv.danmaku.ijk.media.example.content.RecentMediaStorage;
 
 public class RecentMediaListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {

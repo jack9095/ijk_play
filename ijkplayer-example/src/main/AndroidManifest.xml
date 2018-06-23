@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="tv.danmaku.ijk.media.example.activities.FileExplorerActivity"
+            android:name="tv.danmaku.ijk.media.example.start.FileExplorerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"
@@ -52,7 +52,7 @@
             android:screenOrientation="user"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="tv.danmaku.ijk.media.example.activities.VideoActivity"
+            android:name="tv.danmaku.ijk.media.example.playActivity.VideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"

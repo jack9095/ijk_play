@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package tv.danmaku.ijk.media.example.fragments;
+package tv.danmaku.ijk.media.example.playActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,8 +31,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import tv.danmaku.ijk.media.example.R;
-import tv.danmaku.ijk.media.example.activities.VideoActivity;
 
+/**
+ * 播放列表
+ */
 public class SampleMediaListFragment extends Fragment {
     private ListView mFileListView;
     private SampleMediaAdapter mAdapter;
@@ -58,6 +60,7 @@ public class SampleMediaListFragment extends Fragment {
 
         mAdapter = new SampleMediaAdapter(activity);
         mFileListView.setAdapter(mAdapter);
+        // 点击去播放
         mFileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, final long id) {
@@ -81,6 +84,7 @@ public class SampleMediaListFragment extends Fragment {
         mAdapter.addItem("http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/gear4/prog_index.m3u8", "bipbop advanced 1289x720 @ 1 Mbps");
         mAdapter.addItem("http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/gear5/prog_index.m3u8", "bipbop advanced 1920x1080 @ 2 Mbps");
         mAdapter.addItem("http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_16x9/gear0/prog_index.m3u8", "bipbop advanced 22.050Hz stereo @ 40 kbps");
+        mAdapter.addItem("http://ips.ifeng.com/video19.ifeng.com/video09/2014/06/16/1989823-102-086-0009.mp4", "MP4");
     }
 
     final class SampleMediaItem {
@@ -93,6 +97,8 @@ public class SampleMediaListFragment extends Fragment {
         }
     }
 
+
+    // ListView的适配器
     final class SampleMediaAdapter extends ArrayAdapter<SampleMediaItem> {
         public SampleMediaAdapter(Context context) {
             super(context, android.R.layout.simple_list_item_2);

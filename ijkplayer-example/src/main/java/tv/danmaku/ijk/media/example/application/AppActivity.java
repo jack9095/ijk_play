@@ -33,6 +33,9 @@ import tv.danmaku.ijk.media.example.activities.RecentMediaActivity;
 import tv.danmaku.ijk.media.example.activities.SampleMediaActivity;
 import tv.danmaku.ijk.media.example.activities.SettingsActivity;
 
+/**
+ * 所有activity的基类， 标题栏全在这里
+ */
 @SuppressLint("Registered")
 public class AppActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
@@ -45,6 +48,7 @@ public class AppActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // 检查权限
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -81,12 +85,12 @@ public class AppActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings) {  // 设置
             SettingsActivity.intentTo(this);
             return true;
-        } else if (id == R.id.action_recent) {
+        } else if (id == R.id.action_recent) {   // 最近的
             RecentMediaActivity.intentTo(this);
-        } else if (id == R.id.action_sample) {
+        } else if (id == R.id.action_sample) {   // 例子
             SampleMediaActivity.intentTo(this);
         }
 
