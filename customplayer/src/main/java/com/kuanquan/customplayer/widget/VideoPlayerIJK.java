@@ -1,10 +1,9 @@
-package com.kuanquan.customplayer;
+package com.kuanquan.customplayer.widget;
 
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -37,7 +36,7 @@ public class VideoPlayerIJK extends FrameLayout {
 
     private SurfaceView surfaceView;
 
-    private VideoPlayerListener listener;
+    private VideoPlayerListener listener;  // 播放器回调监听
     private Context mContext;
     private IjkMediaPlayer ijkMediaPlayer;
 
@@ -80,14 +79,14 @@ public class VideoPlayerIJK extends FrameLayout {
 //            load();
 //        }
         mPath = path;
-        createSurfaceView();
-        load();
     }
 
     /**
+     * 初始化的时候创建一次SurfaceView就好
      * 新建一个surfaceview
      */
-    private void createSurfaceView() {
+    public void createSurfaceView() {
+        Log.e("VideoPlayerIJK","新建一个surfaceview");
         //生成一个新的surface view
         surfaceView = new SurfaceView(mContext);
         surfaceView.getHolder().addCallback(new LmnSurfaceCallback());
@@ -101,15 +100,19 @@ public class VideoPlayerIJK extends FrameLayout {
      * surfaceView的监听器
      */
     private class LmnSurfaceCallback implements SurfaceHolder.Callback {
+
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+            Log.e("VideoPlayerIJK","surfaceview创建成功后，加载视频");
+//            mMediaPlayer.setDisplay(surfaceView.getHolder());
+            load();
         }
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            //surfaceview创建成功后，加载视频
-            Log.e("VideoPlayerIJK","surfaceview创建成功后，加载视频");
-            load();
+            //surfaceview创建成功后，加载视频  事实证明在这里加在视屏就是个坑
+            Log.e("VideoPlayerIJK","surfaceview改变后，加载视频");
+//            load();
         }
 
         @Override
@@ -120,7 +123,7 @@ public class VideoPlayerIJK extends FrameLayout {
     /**
      * 加载视频
      */
-    private void load() {
+    public void load() {
         //每次都要重新创建IMediaPlayer
         createPlayer();
         try {
@@ -144,7 +147,7 @@ public class VideoPlayerIJK extends FrameLayout {
             mMediaPlayer.release();
         }
         ijkMediaPlayer = new IjkMediaPlayer();
-        ijkMediaPlayer.native_setLogLevel(IjkMediaPlayer.IJK_LOG_DEBUG);
+        ijkMediaPlayer.native_setLogLevel(IjkMediaPlayer.IJK_LOG_DEBUG);  // 打印native的日志
 
 //        //开启硬解码
         ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
@@ -152,14 +155,15 @@ public class VideoPlayerIJK extends FrameLayout {
         mMediaPlayer = ijkMediaPlayer;
 
         if (listener != null) {
-            mMediaPlayer.setOnPreparedListener(listener);
-            mMediaPlayer.setOnInfoListener(listener);
-            mMediaPlayer.setOnSeekCompleteListener(listener);
-            mMediaPlayer.setOnBufferingUpdateListener(listener);
-            mMediaPlayer.setOnErrorListener(listener);
+            mMediaPlayer.setOnPreparedListener(listener);  // 准备播放的监听
+            mMediaPlayer.setOnInfoListener(listener);       // 播放信息监听
+            mMediaPlayer.setOnSeekCompleteListener(listener);   // 进度播放完成监听
+            mMediaPlayer.setOnBufferingUpdateListener(listener);  // 缓存更新监听
+            mMediaPlayer.setOnErrorListener(listener);     // 播放错误监听
         }
     }
 
+    // 设置播放器的回调监听
     public void setListener(VideoPlayerListener listener) {
         this.listener = listener;
         if (mMediaPlayer != null) {
@@ -239,5 +243,10 @@ public class VideoPlayerIJK extends FrameLayout {
         if (mMediaPlayer != null) {
             mMediaPlayer.seekTo(l);
         }
+    }
+
+    // 是否在播放
+    public boolean isPlaying() {
+        return mMediaPlayer != null && mMediaPlayer.isPlaying();
     }
 }

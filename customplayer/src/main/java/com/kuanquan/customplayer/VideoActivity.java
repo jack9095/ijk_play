@@ -2,28 +2,36 @@ package com.kuanquan.customplayer;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import com.kuanquan.customplayer.utils.ScreenRotateUtil;
+import com.kuanquan.customplayer.utils.ScreenUtils;
+import com.kuanquan.customplayer.utils.ScreenWakeLockUtil;
 import com.kuanquan.customplayer.utils.UrlUtil;
+import com.kuanquan.customplayer.view.PlayerBottomView;
+import com.kuanquan.customplayer.view.PlayerTopView;
 import com.kuanquan.customplayer.widget.VideoPlayerIJK;
 import com.kuanquan.customplayer.widget.VideoPlayerListener;
-
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class PlayActivity extends AppCompatActivity {
+public class VideoActivity extends AppCompatActivity implements ScreenRotateUtil.ScreenRotateListener{
+    public PlayerTopView mPlayerTopView;         // 顶部栏
+    public PlayerBottomView mPlayerBottomView;         // 底部栏
     VideoPlayerIJK ijkPlayer;
     private int index;
+    private ScreenRotateUtil mScreenRotateUtil;
+    private ScreenWakeLockUtil mScreenWakeLockUtil;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_video);
         //加载so文件
         try {
             IjkMediaPlayer.loadLibrariesOnce(null);
@@ -36,17 +44,26 @@ public class PlayActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
 
+        mScreenRotateUtil = new ScreenRotateUtil(this, this);
+        mScreenRotateUtil.enable();
+        mScreenWakeLockUtil = new ScreenWakeLockUtil(this);
+        mScreenWakeLockUtil.onCreate();
         ijkPlayer = findViewById(R.id.ijk_player);
+        mPlayerTopView = findViewById(R.id.player_view_player_play_top_view);
+        mPlayerBottomView = findViewById(R.id.player_view_player_play_bottom_view);
         ijkPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.e("PlayActivity","播放器点击事件 = " + index++);
+                hideShowViewAll();
             }
         });
 
-        ijkPlayer.createSurfaceView();
+        Log.e("VideoActivity","********onCreate*******w");
         ijkPlayer.setVideoPath(UrlUtil.url4);
-        ijkPlayer.start();
+        ijkPlayer.createSurfaceView();
+//        ijkPlayer.load();
+//        ijkPlayer.start();
         ijkPlayer.setListener(new VideoPlayerListener() {
             @Override
             public void onBufferingUpdate(IMediaPlayer mp, int percent) {
@@ -54,8 +71,8 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onCompletion(IMediaPlayer mp) {
-                mp.seekTo(0);
-                mp.start();
+//                mp.seekTo(0);
+//                mp.start();
             }
 
             @Override
@@ -91,11 +108,6 @@ public class PlayActivity extends AppCompatActivity {
                 //获取到视频的宽和高
             }
         });
-
-    }
-
-    public void loadVideo(String path) {
-        ijkPlayer.setVideoPath(path);
     }
 
     @Override
@@ -104,11 +116,54 @@ public class PlayActivity extends AppCompatActivity {
         IjkMediaPlayer.native_profileEnd();
     }
 
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.floating_button:
-                loadVideo("http://ips.ifeng.com/video19.ifeng.com/video09/2014/06/16/1989823-102-086-0009.mp4");
-                break;
+    /**
+     * 显示标题状态栏
+     */
+    public void hideShowViewAll() {
+        if (mPlayerTopView.getVisibility() == View.VISIBLE) {
+            mPlayerTopView.setVisibility(View.GONE);    // 顶部标题栏布局的控制
+        }else{
+            mPlayerTopView.setVisibility(View.VISIBLE);    // 顶部标题栏布局的控制
+        }
+
+        if (mPlayerBottomView.getVisibility() == View.VISIBLE) {
+            mPlayerBottomView.setVisibility(View.GONE);    // 底部标题栏布局的控制
+        }else{
+            mPlayerBottomView.setVisibility(View.VISIBLE);    // 底部标题栏布局的控制
+        }
+    }
+
+    @Override
+    public void onPortrait() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ijkPlayer.getLayoutParams();
+        params.height = ScreenUtils.getScreenHeight(this) / 3;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;//设置当前控件布局的高度
+        ijkPlayer.setLayoutParams(params);//将设置好的布局参数应用到控件中
+
+        mPlayerBottomView.getLineView().setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onLandscape() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ijkPlayer.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;//设置当前控件布局的高度
+        ijkPlayer.setLayoutParams(params);//将设置好的布局参数应用到控件中
+
+        mPlayerBottomView.getLineView().setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (ScreenRotateUtil.isLandscape(this)) {
+            mScreenRotateUtil.setBack(true);
+            mScreenRotateUtil.manualSwitchingPortrait();
+        } else {
+            mScreenWakeLockUtil.finish();
+            ijkPlayer.stop();
+            onStop();
+            finish();
         }
     }
 }

@@ -65,7 +65,8 @@ public class VideoActivity extends AppCompatActivity {
         });
 
         Log.e(TAG,"视屏高度 = " + mVideoView.getHeight());
-//        mVideoView.setMediaController(mMediaController);
+        mMediaController.setMediaPlayer(mVideoView);
+        mVideoView.setMediaController(mMediaController);
 //        mVideoView.setHudView(mHudView); // 设置显示到屏幕中间网速、缓存的布局
         // 设置播放路径
         if (mVideoPath != null) {
