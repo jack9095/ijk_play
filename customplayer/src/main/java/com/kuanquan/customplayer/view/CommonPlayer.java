@@ -8,6 +8,7 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,6 +79,7 @@ public class CommonPlayer extends FrameLayout implements View.OnClickListener {
         mPlayerBottomView.getImageView().setOnClickListener(this);
         mPlayerBottomView.getZoomView().setOnClickListener(this);
         mPlayerBottomView.getLineView().setOnClickListener(this);
+        mRelativeLayout.setOnClickListener(this);
 
         screenWidthPixels = ScreenUtils.getScreenWidth(getContext());
 
@@ -337,5 +339,13 @@ public class CommonPlayer extends FrameLayout implements View.OnClickListener {
     // 是否在播放
     public boolean isPlaying() {
         return mIjkVideoView != null && mIjkVideoView.isPlaying();
+    }
+
+    // 设置播放器的高度
+    public void setVideoheight(View mView,int height){
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mView.getLayoutParams();
+        params.height = height;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;//设置当前控件布局的高度
+        mView.setLayoutParams(params);//将设置好的布局参数应用到控件中
     }
 }

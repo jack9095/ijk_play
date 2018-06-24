@@ -28,7 +28,7 @@ import com.kuanquan.customplayer.utils.ScreenRotateUtil;
  * Created by fei.wang on 2018/6/20.
  * 播放控件
  */
-public class PlayerView extends BasePlayerView{
+public class VideoView extends CommonPlayer{
 
     /**
      * 禁止触摸，默认可以触摸，true为禁止false为可触摸
@@ -61,23 +61,23 @@ public class PlayerView extends BasePlayerView{
      */
     private long newPosition = -1;
 
-    public PlayerView(@NonNull Context context) {
+    public VideoView(@NonNull Context context) {
         super(context);
         onEventListener();
     }
 
-    public PlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public VideoView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         onEventListener();
     }
 
-    public PlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public VideoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         onEventListener();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public PlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public VideoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         onEventListener();
     }
@@ -108,9 +108,9 @@ public class PlayerView extends BasePlayerView{
 //                    updatePausePlay();
                     break;
                 case HandlerWhat.MESSAGE_HIDE_CENTER_BOX:
-                    fastForwardLinearLayout.setVisibility(View.GONE);
-                    brightnessLinearLayout.setVisibility(View.GONE);
-                    volumeLinearLayout.setVisibility(View.GONE);
+//                    fastForwardLinearLayout.setVisibility(View.GONE);
+//                    brightnessLinearLayout.setVisibility(View.GONE);
+//                    volumeLinearLayout.setVisibility(View.GONE);
                     break;
             }
         }
@@ -214,188 +214,188 @@ public class PlayerView extends BasePlayerView{
 /********************************************************************************************************/
 
 
-int index;
+//int index;
 int indexnnn;
-    /**
-     * 播放器的手势监听
-     */
-    public class PlayerGestureListener extends GestureDetector.SimpleOnGestureListener {
-
-        /**
-         * 是否是按下的标识，默认为其他动作，true为按下标识，false为其他动作
-         */
-        private boolean isDownTouch;
-        /**
-         * 是否声音控制,默认为亮度控制，true为声音控制，false为亮度控制
-         */
-        private boolean isVolume;
-        /**
-         * 是否横向滑动，默认为纵向滑动，true为横向滑动，false为纵向滑动
-         */
-        private boolean isLandscape;
-
-        /**
-         * 双击
-         */
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            // 视频视窗双击事件
-            if (!isForbidTouch && !isForbidDoulbeUp) {
-
-            }
-            return true;
-        }
-
-        /**
-         * 按下
-         */
-        @Override
-        public boolean onDown(MotionEvent e) {
-            isDownTouch = true;
-
-            LogUtil.e("***** 按下 *****", index++);
-            return super.onDown(e);
-        }
-
-        /**
-         * 滑动
-         */
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (!isForbidTouch) {
-                float mOldX = e1.getX(), mOldY = e1.getY();
-                float deltaY = mOldY - e2.getY();
-                float deltaX = mOldX - e2.getX();
-                if (isDownTouch) {
-                    isLandscape = Math.abs(distanceX) >= Math.abs(distanceY);
-                    isVolume = mOldX > screenWidthPixels * 0.5f;
-                    isDownTouch = false;
-                }
-
-                if (isLandscape) {
-                    // 进度设置
-                    onProgressSlide(-deltaX / mIjkVideoView.getWidth());
-                } else {
-                    float percent = deltaY / mIjkVideoView.getHeight();
-                    if (isVolume) {
-                        // 声音设置
-                        onVolumeSlide(percent);
-                    } else {
-                        // 亮度设置
-                        onBrightnessSlide(percent);
-                    }
-                }
-            }
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        /**
-         * 单击
-         */
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            // 视频视窗单击事件
-            if (!isForbidTouch) {
-                // 显示和隐藏操作面板
-                hideShowViewAll();
-                LogUtil.e("***** 单击事件 ***** = ",indexnnn++);
-            }
-            return true;
-        }
-    }
-
-    /**
-     * 手势滑动改变声音大小
-     *
-     * @param percent
-     */
-    private void onVolumeSlide(float percent) {
-        if (volume == -1) {
-            volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            if (volume < 0)
-                volume = 0;
-        }
-        int index = (int) (percent * mMaxVolume) + volume;
-        if (index > mMaxVolume)
-            index = mMaxVolume;
-        else if (index < 0)
-            index = 0;
-
-        // 变更声音
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
-
-        // 变更进度条
-        int i = (int) (index * 1.0 / mMaxVolume * 100);
-        String s = i + "%";
-        if (i == 0) {
-            s = "off";
-        }
-        // 显示
-        volumeIcon.setImageResource(i == 0 ? R.drawable.player_volume_off_white : R.drawable.player_volume_up_white);
-        brightnessLinearLayout.setVisibility(View.GONE);
-        fastForwardLinearLayout.setVisibility(View.GONE);
-        volumeLinearLayout.setVisibility(View.VISIBLE);
-        volumeText.setVisibility(View.VISIBLE);
-        volumeText.setText(s);
-    }
-
-    /**
-     * 手势 快进或者快退滑动改变进度
-     *
-     * @param percent
-     */
-    private void onProgressSlide(float percent) {
-        int position = (int) mIjkVideoView.getCurrentPosition();
-        long duration = mIjkVideoView.getDuration();
-        long deltaMax = Math.min(100 * 1000, duration - position);
-        long delta = (long) (deltaMax * percent);
-        newPosition = delta + position;
-        if (newPosition > duration) {
-            newPosition = duration;
-        } else if (newPosition <= 0) {
-            newPosition = 0;
-            delta = -position;
-        }
-        int showDelta = (int) delta / 1000;
-        if (showDelta != 0) {
-            fastForwardLinearLayout.setVisibility(View.VISIBLE);
-            brightnessLinearLayout.setVisibility(View.GONE);
-            volumeLinearLayout.setVisibility(View.GONE);
-            String text = showDelta > 0 ? ("+" + showDelta) : "" + showDelta;
-            fastForwardText.setText(text + "s");
-            currentTimePosition.setText(CommonUtil.generateTime(newPosition) + "/");
-            totalTimePosition.setText(CommonUtil.generateTime(duration));
-        }
-    }
-
-    /**
-     * 手势 亮度滑动改变亮度
-     *
-     * @param percent
-     */
-    private void onBrightnessSlide(float percent) {
-        if (brightness < 0) {
-            brightness = mActivity.getWindow().getAttributes().screenBrightness;
-            if (brightness <= 0.00f) {
-                brightness = 0.50f;
-            } else if (brightness < 0.01f) {
-                brightness = 0.01f;
-            }
-        }
-        Log.d(this.getClass().getSimpleName(), "brightness:" + brightness + ",percent:" + percent);
-        brightnessLinearLayout.setVisibility(View.VISIBLE);
-        fastForwardLinearLayout.setVisibility(View.GONE);
-        volumeLinearLayout.setVisibility(View.GONE);
-        WindowManager.LayoutParams lpa = mActivity.getWindow().getAttributes();
-        lpa.screenBrightness = brightness + percent;
-        if (lpa.screenBrightness > 1.0f) {
-            lpa.screenBrightness = 1.0f;
-        } else if (lpa.screenBrightness < 0.01f) {
-            lpa.screenBrightness = 0.01f;
-        }
-        brightnessText.setText(((int) (lpa.screenBrightness * 100)) + "%");
-        mActivity.getWindow().setAttributes(lpa);
-    }
+//    /**
+//     * 播放器的手势监听
+//     */
+//    public class PlayerGestureListener extends GestureDetector.SimpleOnGestureListener {
+//
+//        /**
+//         * 是否是按下的标识，默认为其他动作，true为按下标识，false为其他动作
+//         */
+//        private boolean isDownTouch;
+//        /**
+//         * 是否声音控制,默认为亮度控制，true为声音控制，false为亮度控制
+//         */
+//        private boolean isVolume;
+//        /**
+//         * 是否横向滑动，默认为纵向滑动，true为横向滑动，false为纵向滑动
+//         */
+//        private boolean isLandscape;
+//
+//        /**
+//         * 双击
+//         */
+//        @Override
+//        public boolean onDoubleTap(MotionEvent e) {
+//            // 视频视窗双击事件
+//            if (!isForbidTouch && !isForbidDoulbeUp) {
+//
+//            }
+//            return true;
+//        }
+//
+//        /**
+//         * 按下
+//         */
+//        @Override
+//        public boolean onDown(MotionEvent e) {
+//            isDownTouch = true;
+//
+//            LogUtil.e("***** 按下 *****", index++);
+//            return super.onDown(e);
+//        }
+//
+//        /**
+//         * 滑动
+//         */
+//        @Override
+//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//            if (!isForbidTouch) {
+//                float mOldX = e1.getX(), mOldY = e1.getY();
+//                float deltaY = mOldY - e2.getY();
+//                float deltaX = mOldX - e2.getX();
+//                if (isDownTouch) {
+//                    isLandscape = Math.abs(distanceX) >= Math.abs(distanceY);
+//                    isVolume = mOldX > screenWidthPixels * 0.5f;
+//                    isDownTouch = false;
+//                }
+//
+//                if (isLandscape) {
+//                    // 进度设置
+//                    onProgressSlide(-deltaX / mIjkVideoView.getWidth());
+//                } else {
+//                    float percent = deltaY / mIjkVideoView.getHeight();
+//                    if (isVolume) {
+//                        // 声音设置
+//                        onVolumeSlide(percent);
+//                    } else {
+//                        // 亮度设置
+//                        onBrightnessSlide(percent);
+//                    }
+//                }
+//            }
+//            return super.onScroll(e1, e2, distanceX, distanceY);
+//        }
+//
+//        /**
+//         * 单击
+//         */
+//        @Override
+//        public boolean onSingleTapUp(MotionEvent e) {
+//            // 视频视窗单击事件
+//            if (!isForbidTouch) {
+//                // 显示和隐藏操作面板
+//                hideShowViewAll();
+//                LogUtil.e("***** 单击事件 ***** = ",indexnnn++);
+//            }
+//            return true;
+//        }
+//    }
+//
+//    /**
+//     * 手势滑动改变声音大小
+//     *
+//     * @param percent
+//     */
+//    private void onVolumeSlide(float percent) {
+//        if (volume == -1) {
+//            volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+//            if (volume < 0)
+//                volume = 0;
+//        }
+//        int index = (int) (percent * mMaxVolume) + volume;
+//        if (index > mMaxVolume)
+//            index = mMaxVolume;
+//        else if (index < 0)
+//            index = 0;
+//
+//        // 变更声音
+//        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
+//
+//        // 变更进度条
+//        int i = (int) (index * 1.0 / mMaxVolume * 100);
+//        String s = i + "%";
+//        if (i == 0) {
+//            s = "off";
+//        }
+//        // 显示
+//        volumeIcon.setImageResource(i == 0 ? R.drawable.player_volume_off_white : R.drawable.player_volume_up_white);
+//        brightnessLinearLayout.setVisibility(View.GONE);
+//        fastForwardLinearLayout.setVisibility(View.GONE);
+//        volumeLinearLayout.setVisibility(View.VISIBLE);
+//        volumeText.setVisibility(View.VISIBLE);
+//        volumeText.setText(s);
+//    }
+//
+//    /**
+//     * 手势 快进或者快退滑动改变进度
+//     *
+//     * @param percent
+//     */
+//    private void onProgressSlide(float percent) {
+//        int position = (int) mIjkVideoView.getCurrentPosition();
+//        long duration = mIjkVideoView.getDuration();
+//        long deltaMax = Math.min(100 * 1000, duration - position);
+//        long delta = (long) (deltaMax * percent);
+//        newPosition = delta + position;
+//        if (newPosition > duration) {
+//            newPosition = duration;
+//        } else if (newPosition <= 0) {
+//            newPosition = 0;
+//            delta = -position;
+//        }
+//        int showDelta = (int) delta / 1000;
+//        if (showDelta != 0) {
+//            fastForwardLinearLayout.setVisibility(View.VISIBLE);
+//            brightnessLinearLayout.setVisibility(View.GONE);
+//            volumeLinearLayout.setVisibility(View.GONE);
+//            String text = showDelta > 0 ? ("+" + showDelta) : "" + showDelta;
+//            fastForwardText.setText(text + "s");
+//            currentTimePosition.setText(CommonUtil.generateTime(newPosition) + "/");
+//            totalTimePosition.setText(CommonUtil.generateTime(duration));
+//        }
+//    }
+//
+//    /**
+//     * 手势 亮度滑动改变亮度
+//     *
+//     * @param percent
+//     */
+//    private void onBrightnessSlide(float percent) {
+//        if (brightness < 0) {
+//            brightness = mActivity.getWindow().getAttributes().screenBrightness;
+//            if (brightness <= 0.00f) {
+//                brightness = 0.50f;
+//            } else if (brightness < 0.01f) {
+//                brightness = 0.01f;
+//            }
+//        }
+//        Log.d(this.getClass().getSimpleName(), "brightness:" + brightness + ",percent:" + percent);
+//        brightnessLinearLayout.setVisibility(View.VISIBLE);
+//        fastForwardLinearLayout.setVisibility(View.GONE);
+//        volumeLinearLayout.setVisibility(View.GONE);
+//        WindowManager.LayoutParams lpa = mActivity.getWindow().getAttributes();
+//        lpa.screenBrightness = brightness + percent;
+//        if (lpa.screenBrightness > 1.0f) {
+//            lpa.screenBrightness = 1.0f;
+//        } else if (lpa.screenBrightness < 0.01f) {
+//            lpa.screenBrightness = 0.01f;
+//        }
+//        brightnessText.setText(((int) (lpa.screenBrightness * 100)) + "%");
+//        mActivity.getWindow().setAttributes(lpa);
+//    }
 
     /**
      * 手势结束
